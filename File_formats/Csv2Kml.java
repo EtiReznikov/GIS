@@ -33,7 +33,7 @@ public class Csv2Kml {
 	 * @param outputName the name that the user want to give to the KML file
 	 */
 	public String ReadCSV(String inputName, String outputName) {
-		ArrayList<String []> output=new ArrayList<>();
+		ArrayList<String []> toKML=new ArrayList<>();
 		String tofinalKML;
 		// Creates a new name to the kml file
 		String nameFile=outputName+".kml";
@@ -51,12 +51,10 @@ public class Csv2Kml {
 			{
 				thisLine++;
 				String[] wigleWifi = line.split(cvsSplitBy);
-				// Add the info of the line
-		//		output.add(wigleWifi);	
-				
+				// Start to read info from line two
 				if (thisLine>1) {
-					// Add the info of the line
-					output.add(wigleWifi);	
+					// Add the info of the line and add it to the GisElement and to the KML info
+					toKML.add(wigleWifi);	
 					Metadata metadata=new Metadata();
 					metadata.setMAC(wigleWifi[0]);
 					metadata.setSSID(wigleWifi[1]);
@@ -75,28 +73,33 @@ public class Csv2Kml {
 			e.printStackTrace();
 
 		}
-
-		tofinalKML=this.writeFileKML(output,nameFile);
+		// CAll the writeFileKML function and return String that contains all the info of the elements
+		tofinalKML=this.writeFileKML(toKML,nameFile);
 		return tofinalKML;
 	}
 
 
-
+	/**
+	 * Write the KML file of one layer
+	 * @param toKML ArrayList that contains all the info of the layer
+	 * @param output the name of the file
+	 * @return toFinalKML string that contains all the info of the KML
+	 */
 	public String writeFileKML(ArrayList<String[]> toKML, String output) {
 		ArrayList<String> KML = new ArrayList<String>();
-//		ArrayList<String> tofinalKML = new ArrayList<String>();
 		String tofinalKML="";
+		// The opening of the KML file
 		String kmlstart = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
 				"<kml xmlns=\"http://www.opengis.net/kml/2.2\">\n"
 				+ " <Document> <Folder><name>Wifi Networks</name>\n";
 
-
 		KML.add(kmlstart);
-
+		// The ending of the KML file
 		String kmlend = "</Folder>\n</Document>"+"\n</kml>";
 		try{
 			FileWriter fw = new FileWriter(output);
 			BufferedWriter bw = new BufferedWriter(fw);
+			// Go over the ArrayList and add the info to the KML
 			for (int i = 0; i < toKML.size(); i++) {
 				String[] s = toKML.get(i);
 				String kmlelement ="<Placemark>\n" +
@@ -114,21 +117,19 @@ public class Csv2Kml {
 				tofinalKML=tofinalKML+kmlelement;
 			}
 			KML.add(kmlend);
-			String csv="";
+			// Change the ArrayList to String
+			String KmlArrayToString="";
 			for (int i=0; i<KML.size(); i++) {
-				csv=csv+KML.get(i);		
+				KmlArrayToString=KmlArrayToString+KML.get(i);		
 			}
-
-			bw.write(csv);
+			// Add all the String to the KML
+			bw.write(KmlArrayToString);
 			bw.close();
 		} 
 		catch (IOException e) {
 			e.printStackTrace();
 		}
-		
-		
 		return tofinalKML;
-	
 	}
 
 }

@@ -15,6 +15,7 @@ import GIS.Project;
 public class MultiCSV {
 	public static void main(String[] args) {
 		fileManipulation("C:\\Users\\etire\\eclipse-workspace\\Ex_2");
+		
 	}
 	Project GISproject;
 	// Collect all the data of the KML files
@@ -36,6 +37,7 @@ public class MultiCSV {
 		multiCSV(path, CSVfolder) ;
 		// Create one KML file
 		finalKML(CSVfolder.toKML);
+		
 	}
 	
 	/**
